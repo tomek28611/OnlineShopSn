@@ -2,7 +2,7 @@
 @{
     List<OnlineShop.Models.Db.ProductGalery>? gallery = new List<ProductGalery>();
     List<Product> NewProducts = new List<Product>();
-  
+    List<Comment> comments = new List<Comment>();
     //--------------------------
     if (ViewData["NewProducts"] != null)
     {
@@ -12,7 +12,10 @@
     {
         gallery = ViewData["gallery"] as List<ProductGalery>;
     }
-   
+    if (ViewData["comments"] != null)
+    {
+        comments = ViewData["comments"] as List<Comment>;
+    }
 }
 
 <!--breadcrumbs area start-->
@@ -84,7 +87,7 @@
 
                             <div class="product_review">
                                 <ul class="d-flex">
-                                    @* <li>@comments.Count reviews</li> *@
+                                    <li>@comments.Count reviews</li>
                                     <li>Write your review</li>
                                 </ul>
                             </div>
@@ -212,23 +215,23 @@
                         </div>
                         <div class="tab-pane fade" id="reviews" role="tabpanel">
                             <div class="reviews_wrapper">
-                                @* <h2>@comments.Count review for @Model.Title</h2> *@
-                                @* @foreach (var item in comments) *@
-                                @* { *@
-                                @*     <div class="reviews_comment_box"> *@
-                                @*         <div class="comment_thmb"> *@
-                                @*             <img src="assets/img/blog/comment2.jpg" alt=""> *@
-                                @*         </div> *@
-                                @*         <div class="comment_text"> *@
-                                @*             <div class="reviews_meta"> *@
+                                <h2>@comments.Count review for @Model.Title</h2>
+                                @foreach (var item in comments)
+                                {
+                                    <div class="reviews_comment_box">
+                                        <div class="comment_thmb">
+                                            <img src="assets/img/blog/comment2.jpg" alt="">
+                                        </div>
+                                        <div class="comment_text">
+                                            <div class="reviews_meta">
 
-                                @*                 <p><strong>@item.Name </strong>- @item.CreateDate</p> *@
-                                @*                 <span>@item.CommentText</span> *@
-                                @*             </div> *@
-                                @*         </div> *@
+                                                <p><strong>@item.Name </strong>- @item.CreateDate</p>
+                                                <span>@item.CommentText</span>
+                                            </div>
+                                        </div>
 
-                                @*     </div> *@
-                                @* } *@
+                                    </div>
+                                }
 
                                 <div class="comment_title">
                                     <h2>Add a review </h2>
