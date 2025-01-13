@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using OnlineShop.Models.Db;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +7,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<OnlineShopContext>();
+//---------------------
+//builder.Services.AddSession();
+//builder.Services.AddHttpContextAccessor();
+//---------------------
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+        .AddCookie(options =>
+        {
+            options.LoginPath = "/Account/Login";
+            options.LogoutPath = "/Account/logout";
+        });
+
+//---------------------
 
 var app = builder.Build();
 
@@ -22,6 +35,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
