@@ -27,6 +27,8 @@ public partial class OnlineShopContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public virtual DbSet<Setting> Settings { get; set; }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -86,6 +88,44 @@ public partial class OnlineShopContext : DbContext
             entity.Property(e => e.Password).HasMaxLength(50);
             entity.Property(e => e.RegisterDate).HasColumnType("datetime");
         });
+
+        modelBuilder.Entity<Setting>(entity =>
+        {
+            entity.Property(e => e.Address)
+                .HasMaxLength(500)
+                .IsFixedLength();
+            entity.Property(e => e.CopyRight)
+                .HasMaxLength(100)
+                .IsFixedLength();
+            entity.Property(e => e.Email)
+                .HasMaxLength(50)
+                .IsFixedLength();
+            entity.Property(e => e.FaceBook)
+                .HasMaxLength(100)
+                .IsFixedLength();
+            entity.Property(e => e.GooglePlus)
+                .HasMaxLength(100)
+                .IsFixedLength();
+            entity.Property(e => e.Instagram)
+                .HasMaxLength(100)
+                .IsFixedLength();
+            entity.Property(e => e.Logo)
+                .HasMaxLength(50)
+                .IsFixedLength();
+            entity.Property(e => e.Phone)
+                .HasMaxLength(50)
+                .IsFixedLength();
+            entity.Property(e => e.Title)
+                .HasMaxLength(100)
+                .IsFixedLength();
+            entity.Property(e => e.Twitter)
+                .HasMaxLength(100)
+                .IsFixedLength();
+            entity.Property(e => e.Youtube)
+                .HasMaxLength(100)
+                .IsFixedLength();
+        });
+
 
 
 
