@@ -11,6 +11,7 @@ using OnlineShop.Models.Db;
 namespace OnlineShop.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "admin")]
     public class ProductsController : Controller
     {
         private readonly OnlineShopContext _context;
