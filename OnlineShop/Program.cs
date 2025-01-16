@@ -1,10 +1,25 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using OnlineShop.Models.Db;
+using Blazorise;
+using Blazorise.Bootstrap;
+using Blazorise.Icons.FontAwesome;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddServerSideBlazor();
+
+builder.Services
+    .AddBlazorise(options =>
+    {
+        options.Immediate = true;
+    })
+    .AddBootstrapProviders()
+    .AddFontAwesomeIcons();
+
 
 builder.Services.AddDbContext<OnlineShopContext>();
 //---------------------
@@ -37,6 +52,8 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapBlazorHub();
 
 app.MapControllerRoute(
     name: "Admin",

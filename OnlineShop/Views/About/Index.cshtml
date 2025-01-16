@@ -1,0 +1,16 @@
+﻿@using OnlineShop.Components
+
+
+
+<div class="shop_section shop_reverse">
+    <div class="container">
+        <div class="row mt-5">
+
+            @(
+                await Html.RenderComponentAsync<About>(RenderMode.Server)
+                )
+
+        </div>
+    </div>
+</div>
+

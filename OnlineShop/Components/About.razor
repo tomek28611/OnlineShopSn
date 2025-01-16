@@ -1,0 +1,88 @@
+﻿@page "/about"
+<PageTitle>About - Online Shop</PageTitle>
+
+<Container Class="mt-5">
+    <Row>
+        
+            <Heading  Class="text-center">About Online Shop</Heading>
+            <Paragraph Class="lead text-center">
+                Find answers to common questions about shopping at Online Shop, including returns, payments, and customer service.
+            </Paragraph>
+       
+    </Row>
+
+    <Row Class="mt-4">
+      
+            <Accordion>
+                <!-- Question 1 -->
+                <AccordionItem @bind-Visible="@accordionItem1Visible">
+                    <AccordionHeader>
+                        <Heading Size="HeadingSize.Is5">
+                            <AccordionToggle>Can I return the goods if I change my mind?</AccordionToggle>
+                        </Heading>
+                    </AccordionHeader>
+                    <AccordionBody>
+                        Yes, you can return the goods within 30 days of receiving your order, provided they are in their original condition and packaging. Please visit our Returns page or contact our customer service team to initiate the process.
+                    </AccordionBody>
+                </AccordionItem>
+
+                <!-- Question 2 -->
+                <AccordionItem @bind-Visible="@accordionItem2Visible">
+                    <AccordionHeader>
+                        <Heading Size="HeadingSize.Is5">
+                            <AccordionToggle>Can I pay upon receipt?</AccordionToggle>
+                        </Heading>
+                    </AccordionHeader>
+                    <AccordionBody>
+                        Yes, we offer the option to pay upon receipt for certain locations. This service may incur an additional fee. Check our Payment Options page or contact customer service to confirm availability in your area.
+                    </AccordionBody>
+                </AccordionItem>
+
+                <!-- Question 3 -->
+                <AccordionItem @bind-Visible="@accordionItem3Visible">
+                    <AccordionHeader>
+                        <Heading Size="HeadingSize.Is5">
+                            <AccordionToggle>Can I exchange the goods if they are the wrong size?</AccordionToggle>
+                        </Heading>
+                    </AccordionHeader>
+                    <AccordionBody>
+                        Yes, if the goods are the wrong size, you can exchange them within 30 days of receiving your order. Please ensure the items are unworn and in their original packaging. Contact our customer service team for assistance with the exchange process.
+                    </AccordionBody>
+                </AccordionItem>
+
+                <!-- Question 4 -->
+                <AccordionItem @bind-Visible="@accordionItem4Visible">
+                    <AccordionHeader>
+                        <Heading Size="HeadingSize.Is5">
+                            <AccordionToggle>How can I contact the store's customer service?</AccordionToggle>
+                        </Heading>
+                    </AccordionHeader>
+                    <AccordionBody>
+                        You can contact our customer service team via email at support@onlineshop.com or by calling us at +123 456 789. Our customer service hours are Monday to Friday, 9:00 AM to 6:00 PM.
+                    </AccordionBody>
+                </AccordionItem>
+
+                <!-- Question 5 -->
+                <AccordionItem @bind-Visible="@accordionItem5Visible">
+                    <AccordionHeader>
+                        <Heading Size="HeadingSize.Is5">
+                            <AccordionToggle>Can I see the goods before buying?</AccordionToggle>
+                        </Heading>
+                    </AccordionHeader>
+                    <AccordionBody>
+                        Unfortunately, we do not offer the option to view goods in person before purchase, as we operate exclusively online. However, our product pages provide detailed descriptions, high-quality images, and customer reviews to help you make an informed decision.
+                    </AccordionBody>
+                </AccordionItem>
+            </Accordion>
+       
+    </Row>
+</Container>
+
+@code {
+    // Variables to track visibility of each accordion item
+    bool accordionItem1Visible = true;
+    bool accordionItem2Visible = false;
+    bool accordionItem3Visible = false;
+    bool accordionItem4Visible = false;
+    bool accordionItem5Visible = false;
+}
