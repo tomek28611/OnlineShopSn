@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+using OnlineShop.Areas.Admin.Interfaces;
 using OnlineShop.Models.Db;
+
 
 namespace OnlineShop.Areas.Admin.Controllers
 {
@@ -14,20 +10,19 @@ namespace OnlineShop.Areas.Admin.Controllers
     [Authorize(Roles = "admin")]
     public class CommentsController : Controller
     {
-        private readonly OnlineShopContext _context;
+        private readonly ICommentsService _commentService;
 
-        public CommentsController(OnlineShopContext context)
+        public CommentsController(ICommentsService commentService)
         {
-            _context = context;
+            _commentService = commentService;
         }
 
-        // GET: Admin/Comments
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Comments.ToListAsync());
+            var comments = await _commentService.GetAllCommentsAsync();
+            return View(comments);
         }
 
-        // GET: Admin/Comments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -35,8 +30,7 @@ namespace OnlineShop.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var comment = await _context.Comments
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var comment = await _commentService.GetCommentByIdAsync(id.Value);
             if (comment == null)
             {
                 return NotFound();
@@ -45,29 +39,23 @@ namespace OnlineShop.Areas.Admin.Controllers
             return View(comment);
         }
 
-        // GET: Admin/Comments/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Admin/Comments/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Email,CommentText,ProductId,CreateDate")] Comment comment)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(comment);
-                await _context.SaveChangesAsync();
+                await _commentService.CreateCommentAsync(comment);
                 return RedirectToAction(nameof(Index));
             }
             return View(comment);
         }
 
-        // GET: Admin/Comments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -75,17 +63,15 @@ namespace OnlineShop.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var comment = await _context.Comments.FindAsync(id);
+            var comment = await _commentService.GetCommentByIdAsync(id.Value);
             if (comment == null)
             {
                 return NotFound();
             }
+
             return View(comment);
         }
 
-        // POST: Admin/Comments/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Email,CommentText,ProductId,CreateDate")] Comment comment)
@@ -97,28 +83,18 @@ namespace OnlineShop.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                var updated = await _commentService.UpdateCommentAsync(comment);
+                if (!updated)
                 {
-                    _context.Update(comment);
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CommentExists(comment.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(comment);
         }
 
-        // GET: Admin/Comments/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -126,8 +102,7 @@ namespace OnlineShop.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var comment = await _context.Comments
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var comment = await _commentService.GetCommentByIdAsync(id.Value);
             if (comment == null)
             {
                 return NotFound();
@@ -136,24 +111,17 @@ namespace OnlineShop.Areas.Admin.Controllers
             return View(comment);
         }
 
-        // POST: Admin/Comments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var comment = await _context.Comments.FindAsync(id);
-            if (comment != null)
+            var deleted = await _commentService.DeleteCommentAsync(id);
+            if (!deleted)
             {
-                _context.Comments.Remove(comment);
+                return NotFound();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool CommentExists(int id)
-        {
-            return _context.Comments.Any(e => e.Id == id);
         }
     }
 }

@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Models.Db;
 using System.Security.Claims;
 
-namespace OnlineShop.Areas.User.Controllers
+namespace OnlineShop.Areas.MyUser.Controllers
 {
     [Authorize]
-    [Area("User")]
+    [Area("MyUser")]
     public class HomeController : Controller
     {
         private readonly OnlineShopContext _context;

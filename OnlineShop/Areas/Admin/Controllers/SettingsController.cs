@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+using OnlineShop.Areas.Admin.Interfaces;
+using OnlineShop.Areas.Admin.Services;
 using OnlineShop.Models.Db;
+
 
 namespace OnlineShop.Areas.Admin.Controllers
 {
@@ -14,32 +11,37 @@ namespace OnlineShop.Areas.Admin.Controllers
     [Authorize(Roles = "admin")]
     public class SettingsController : Controller
     {
-        private readonly OnlineShopContext _context;
+        private readonly ISettingsService _settingsService;
 
-        public SettingsController(OnlineShopContext context)
+        public SettingsController(ISettingsService settingsService)
         {
-            _context = context;
+            _settingsService = settingsService;
         }
 
-
-
-        // GET: Admin/Settings/Edit/5
         public async Task<IActionResult> Edit()
         {
-
-            var setting = await _context.Settings.FirstAsync();
-            if (setting == null)
+            try
             {
-                return NotFound();
+                var setting = await _settingsService.GetSettingAsync();
+                if (setting == null)
+                {
+                    return NotFound();
+                }
+                return View(setting);
             }
-            return View(setting);
+            catch (ServiceException ex)
+            {
+
+                TempData["error"] = "An error occurred while loading settings.";
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id,
-    [Bind("Id,Shipping,Title,Address,Email,Phone,CopyRight,Instagram,FaceBook,GooglePlus,Youtube,Twitter,Logo")]
-       Setting setting, IFormFile? newLogo)
+            [Bind("Id,Shipping,Title,Address,Email,Phone,CopyRight,Instagram,FaceBook,GooglePlus,Youtube,Twitter,Logo")]
+            Setting setting, IFormFile? newLogo)
         {
             if (id != setting.Id)
             {
@@ -50,54 +52,22 @@ namespace OnlineShop.Areas.Admin.Controllers
             {
                 try
                 {
-                    if (newLogo != null)
+                    var success = await _settingsService.UpdateSettingAsync(setting, newLogo);
+                    if (success)
                     {
-
-                        string d = Directory.GetCurrentDirectory();
-                        string path = d + "\\wwwroot\\images\\" + setting.Logo;
-                        //------------------------------------------------
-                        if (System.IO.File.Exists(path))
-                        {
-                            System.IO.File.Delete(path);
-                        }
-
-                        //------------------------------------------------
-                        setting.Logo = Guid.NewGuid() + Path.GetExtension(newLogo.FileName);
-                        path = d + "\\wwwroot\\images\\" + setting.Logo;
-                        //------------------------------------------------
-
-                        using (var stream = new FileStream(path, FileMode.Create))
-                        {
-                            newLogo.CopyTo(stream);
-                        }
+                        TempData["message"] = "Setting saved successfully.";
+                        return RedirectToAction("Edit");
                     }
-
-                    _context.Update(setting);
-                    await _context.SaveChangesAsync();
-
-                    TempData["message"] = "Setting saved";
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (ServiceException ex)
                 {
-                    if (!SettingExists(setting.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+
+                    TempData["error"] = "An error occurred while saving the settings.";
                 }
             }
 
-            return Redirect($"/admin/Settings/Edit");
+            return View(setting);
         }
-
-
-        private bool SettingExists(int id)
-        {
-            return _context.Settings.Any(e => e.Id == id);
-        }
-
     }
 }
+

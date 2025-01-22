@@ -257,7 +257,7 @@
                                         <ul class="dropdown_account_link">
                                             @if (User.Identity.IsAuthenticated)
                                             {
-                                                <li><a href="/User">My Account</a></li>
+                                                <li><a href="/MyUser">My Account</a></li>
                                               
 
                                                 @if (User.IsInRole("admin"))
@@ -463,8 +463,7 @@
         </div>
     </div>
     <!-- modal area end-->
-    <!-- JS
-    ============================================ -->
+
 
     <script src="/assets/js/vendor/jquery-3.4.1.min.js"></script>
     <script src="/assets/js/vendor/popper.js"></script>
@@ -484,52 +483,9 @@
 
     <!-- Main JS -->
     <script src="/assets/js/main.js"></script>
+    <script src="/js/cart.js"></script>
 
-    <script>
-        function updateCart(productId, count) {
-            $.ajax({
-                url: '/Cart/UpdateCart',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ productId: productId, count: count }),
-                success: function (result) {
-                    $(".item_count").html(result);
-                    if(count==0){
-                        $("#" + productId).remove();
-                    }
-                    getMiniCart();
-                },
-                error: function () {
-                    alert('Error product not found or QTY is not enough!');
-                }
-            });
-        }
-
-        function getMiniCart() {
-            $.ajax({
-                url: '/Cart/SmallCart',
-                type: 'GET',
-                success: function (result) {
-                    $(".mini_cart").html(result);
-                },
-                error: function () {
-                    alert('Error fetching mini cart');
-                }
-            });
-        }
-
-        $(document).ready(function () {
-
-            getMiniCart();
-            $(".slick-slide").click(function () {
-                $(".slick-track").css("transform", "");
-            });
-        });
-
-
-
-    </script>
-
+   
 
 </body>
 

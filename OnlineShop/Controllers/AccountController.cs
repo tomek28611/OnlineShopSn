@@ -1,23 +1,27 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using OnlineShop.Models.Db;
-using System.Security.Claims;
-using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Authorization;
-using System.Net.Mail;
+using OnlineShop.Models.Db;
 using OnlineShop.Models.ViewModels;
+using OnlineShop.Services;
+
 
 namespace OnlineShop.Controllers
 {
     public class AccountController : Controller
     {
-        private OnlineShopContext _context;
+        private readonly ValidationService _validationService;
+        private readonly UserService _userService;
+        private readonly EmailService _emailService;
 
-        public AccountController(OnlineShopContext context)
+        public AccountController(ValidationService validationService, UserService userService, EmailService emailService)
         {
-            _context = context;
+            _validationService = validationService;
+            _userService = userService;
+            _emailService = emailService;
         }
+
         public IActionResult Register()
         {
             return View();
@@ -26,83 +30,51 @@ namespace OnlineShop.Controllers
         [HttpPost]
         public IActionResult Register(User user)
         {
-            user.RegisterDate = DateTime.Now;
-            user.IsAdmin = false;
-            user.Email = user.Email?.Trim();
-            user.Password = user.Password?.Trim();
-            user.FullName = user.FullName?.Trim();
-            user.RecoveryCode = 0;
-            //------------------------
             if (!ModelState.IsValid)
             {
                 return View(user);
             }
-            //------------Valid Email Checking------------
-            Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
-            Match match = regex.Match(user.Email);
-            if (!match.Success)
+
+            if (!_validationService.IsValidEmail(user.Email))
             {
                 ModelState.AddModelError("Email", "Email is not valid");
                 return View(user);
             }
-            //-----------Duplictae Email Checking-------------
-            var prevUser = _context.Users.Any(x => x.Email == user.Email);
-            if (prevUser == true)
+
+            if (_userService.IsEmailDuplicate(user.Email))
             {
-                ModelState.AddModelError("Email", "Email exists");
+                ModelState.AddModelError("Email", "Email already exists");
                 return View(user);
             }
-            //------------------------------------------------
-            _context.Users.Add(user);
-            _context.SaveChanges();
-            //------------------------
-            return RedirectToAction("login");
+
+            _userService.CreateUser(user);
+
+            return RedirectToAction("Login");
         }
+
         public IActionResult Login()
         {
             return View();
         }
+
         [HttpPost]
         public IActionResult Login(LoginViewModel user)
         {
-            //------------
             if (!ModelState.IsValid)
             {
                 return View(user);
             }
-            //------------
-            var foundUser = _context.Users.FirstOrDefault(x => x.Email == user.Email.Trim() && x.Password == user.Password.Trim());
-            //-----
+
+            var foundUser = _userService.AuthenticateUser(user.Email, user.Password);
             if (foundUser == null)
             {
-                ModelState.AddModelError("Email", "Email or Password is not valid!");
+                ModelState.AddModelError("Email", "Email or password is not valid!");
                 return View(user);
             }
-            //------------
-            // Create claims for the authenticated user
-            var claims = new List<Claim>();
-            claims.Add(new Claim(ClaimTypes.NameIdentifier, foundUser.Id.ToString()));
-            claims.Add(new Claim(ClaimTypes.Name, foundUser.FullName));
-            claims.Add(new Claim(ClaimTypes.Email, foundUser.Email));
-            //------------
-            if (foundUser.IsAdmin == true)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, "admin"));
-            }
-            else
-            {
-                claims.Add(new Claim(ClaimTypes.Role, "user"));
-            }
-            //------------
-            // Create an identity based on the claims
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            //------------
-            // Create a principal based on the identity
-            var principal = new ClaimsPrincipal(identity);
-            //------------
-            // Sign in the user with the created principal
-            HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-            //------------
+
+            var claimsPrincipal = _userService.GenerateClaimsPrincipal(foundUser);
+            HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
+
             return Redirect("/");
         }
 
@@ -112,70 +84,38 @@ namespace OnlineShop.Controllers
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login", "Account");
         }
+
         public IActionResult RecoveryPassword()
         {
             return View();
         }
 
         [HttpPost]
-        public IActionResult RecoveryPassword(RecoveryPasswordViewModel recoveryPassword)
+        public IActionResult RecoveryPassword(ResetPasswordViewModel recoveryPassword)
         {
-            if (!ModelState.IsValid)
-            {
-                return View();
-            }
-
-            ////-------------------------------------------
-
-            Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
-            Match match = regex.Match(recoveryPassword.Email);
-            if (!match.Success)
+   
+            if (!_validationService.IsValidEmail(recoveryPassword.Email))
             {
                 ModelState.AddModelError("Email", "Email is not valid");
                 return View(recoveryPassword);
             }
 
-            ////-------------------------------------------
-
-            var foundUser = _context.Users.FirstOrDefault(x => x.Email == recoveryPassword.Email.Trim());
+            var foundUser = _userService.GetUserByEmail(recoveryPassword.Email);
             if (foundUser == null)
             {
-                ModelState.AddModelError("Email", "Email  not exist");
+                ModelState.AddModelError("Email", "Email does not exist");
                 return View(recoveryPassword);
             }
 
-            ////-------------------------------------------
+            var recoveryCode = _userService.GenerateRecoveryCode(foundUser);
+            _emailService.SendRecoveryCode(foundUser.Email, recoveryCode);
 
-            foundUser.RecoveryCode = new Random().Next(10000, 100000);
-            _context.Users.Update(foundUser);
-            _context.SaveChanges();
-
-            ////-------------------------------------------
-
-            MailMessage mail = new MailMessage();
-            SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
-
-            mail.From = new MailAddress("autodilyobchod@gmail.com");
-            mail.To.Add(foundUser.Email);
-            mail.Subject = "Recovery code";
-            mail.Body = "Your recovery code:" + foundUser.RecoveryCode;
-
-            SmtpServer.Port = 587;
-            SmtpServer.Credentials = new System.Net.NetworkCredential("autodilyobchod@gmail.com", "kzrr ynuc iati hlif");
-            SmtpServer.EnableSsl = true;
-
-            SmtpServer.Send(mail);
-
-            ////-------------------------------------------
-            return Redirect("/Account/ResetPassword?email=" + foundUser.Email);
+            return Redirect($"/Account/ResetPassword?email={foundUser.Email}");
         }
 
         public IActionResult ResetPassword(string email)
         {
-            var resetPasswordModel = new ResetPasswordViewModel();
-            resetPasswordModel.Email = email;
-
-            return View(resetPasswordModel);
+            return View(new ResetPasswordViewModel { Email = email });
         }
 
         [HttpPost]
@@ -186,23 +126,14 @@ namespace OnlineShop.Controllers
                 return View(resetPassword);
             }
 
-            ////-------------------------------------------
-
-            var foundUser = _context.Users.FirstOrDefault(x => x.Email == resetPassword.Email && x.RecoveryCode == resetPassword.RecoveryCode);
-            if (foundUser == null)
+            var isValid = _userService.VerifyRecoveryCode(resetPassword.Email, resetPassword.RecoveryCode.Value);
+            if (!isValid)
             {
                 ModelState.AddModelError("RecoveryCode", "Email or recovery code is not valid");
                 return View(resetPassword);
             }
 
-            ////-------------------------------------------
-
-            foundUser.Password = resetPassword.NewPassword;
-
-            _context.Users.Update(foundUser);
-            _context.SaveChanges();
-
-            ////-------------------------------------------
+            _userService.UpdatePassword(resetPassword.Email, resetPassword.NewPassword);
 
             return RedirectToAction("Login");
         }
