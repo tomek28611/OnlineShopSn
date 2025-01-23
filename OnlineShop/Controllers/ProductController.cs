@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Services;
 
-
 namespace OnlineShop.Controllers
 {
     public class ProductsController : Controller
