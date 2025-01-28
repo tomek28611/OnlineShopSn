@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+﻿
 using OnlineShop.Models.Db;
 
 namespace OnlineShop.Areas.Admin.Interfaces

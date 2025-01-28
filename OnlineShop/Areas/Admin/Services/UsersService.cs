@@ -14,7 +14,15 @@ namespace OnlineShop.Areas.Admin.Services
 
         public async Task<List<User>> GetAllUsersAsync()
         {
-            return await _context.Users.ToListAsync();
+            try
+            {
+                return await _context.Users.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching users: {ex.Message}");
+                throw;
+            }
         }
 
         public async Task<User> GetUserByIdAsync(int id)
