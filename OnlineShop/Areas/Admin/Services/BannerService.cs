@@ -1,8 +1,8 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using OnlineShop.Areas.Admin.Interfaces;
-using OnlineShop.Models.Db;
-
+using OnlineShop.Data;
+using OnlineShop.Data.Entities;
 
 namespace OnlineShop.Areas.Admin.Interfaces
 {
@@ -16,17 +16,17 @@ namespace OnlineShop.Areas.Admin.Interfaces
             _context = context;
         }
 
-        public async Task<List<Banner>> GetAllBannersAsync()
+        public async Task<List<BannerEntity>> GetAllBannersAsync()
         {
             return await _context.Banners.ToListAsync();
         }
 
-        public async Task<Banner> GetBannerByIdAsync(int id)
+        public async Task<BannerEntity> GetBannerByIdAsync(int id)
         {
             return await _context.Banners.FirstOrDefaultAsync(b => b.Id == id);
         }
 
-        public async Task<bool> CreateBannerAsync(Banner banner, IFormFile imageFile)
+        public async Task<bool> CreateBannerAsync(BannerEntity banner, IFormFile imageFile)
         {
             if (imageFile != null)
             {
@@ -38,13 +38,13 @@ namespace OnlineShop.Areas.Admin.Interfaces
             return true;
         }
 
-        public async Task<Banner?> GetBannerForEditAsync(int id)
+        public async Task<BannerEntity?> GetBannerForEditAsync(int id)
         {
             return await _context.Banners.FindAsync(id);
         }
 
 
-        public async Task<bool> UpdateBannerAsync(Banner banner, IFormFile? imageFile)
+        public async Task<bool> UpdateBannerAsync(BannerEntity banner, IFormFile? imageFile)
         {
             var existingBanner = await _context.Banners.FindAsync(banner.Id);
             if (existingBanner == null)

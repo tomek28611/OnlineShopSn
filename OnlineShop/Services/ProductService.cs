@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using OnlineShop.Models.Db;
-using OnlineShop.Models.ViewModels;
+using OnlineShop.Data;
+using OnlineShop.ViewModels;
 
 namespace OnlineShop.Services
 {

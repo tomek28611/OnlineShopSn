@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OnlineShop.Areas.Admin.Interfaces;
+using OnlineShop.Data;
 using OnlineShop.Exceptions;
-using OnlineShop.Models.Db;
 using System;
 
 namespace OnlineShop.Areas.Admin.Services

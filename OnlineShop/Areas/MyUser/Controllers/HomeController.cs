@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OnlineShop.Models.Db;
+using OnlineShop.Data;
 using System.Security.Claims;
 
 namespace OnlineShop.Areas.MyUser.Controllers

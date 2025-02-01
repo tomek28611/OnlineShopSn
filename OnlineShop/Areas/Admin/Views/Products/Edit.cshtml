@@ -1,4 +1,4 @@
-﻿@model OnlineShop.Models.Db.Product
+﻿@model             Product
 
 @{
     ViewData["Title"] = "Edit";
@@ -51,7 +51,7 @@
                 <input type="file" name="GalleryImages" multiple class="form-control" />
                 <br />
                 @{
-                    var galleries = ViewData["gallery"] as List<OnlineShop.Models.Db.ProductGalery>;
+                    var galleries = ViewData["gallery"] as List<ProductGalery>;
                     <div class="row">
                         @if (galleries != null)
                         {

@@ -2,8 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Areas.Admin.Interfaces;
-using OnlineShop.Models.Db;
-
+using OnlineShop.Data;
 
 namespace OnlineShop.Areas.Admin.Controllers
 {
@@ -47,7 +46,7 @@ namespace OnlineShop.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Email,FullName,Password,IsAdmin,RegisterDate,RecoveryCode")] OnlineShop.Models.Db.User user)
+        public async Task<IActionResult> Create([Bind("Id,Email,FullName,Password,IsAdmin,RegisterDate,RecoveryCode")] User user)
         {
             if (ModelState.IsValid)
             {
@@ -71,7 +70,7 @@ namespace OnlineShop.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Email,FullName,Password,IsAdmin,RegisterDate,RecoveryCode")] OnlineShop.Models.Db.User user)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Email,FullName,Password,IsAdmin,RegisterDate,RecoveryCode")] User user)
         {
             await _usersService.UpdateUserAsync(id, user);
             return RedirectToAction(nameof(Index));

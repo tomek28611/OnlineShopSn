@@ -1,4 +1,4 @@
-﻿using OnlineShop.Models.Db;
+﻿using OnlineShop.Data;
 
 namespace OnlineShop.Areas.Admin.Interfaces
 {

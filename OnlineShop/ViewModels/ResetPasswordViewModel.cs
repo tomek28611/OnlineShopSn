@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace OnlineShop.Models.ViewModels
+namespace OnlineShop.ViewModels
 {
     public class ResetPasswordViewModel
     {

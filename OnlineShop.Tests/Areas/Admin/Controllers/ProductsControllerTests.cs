@@ -2,7 +2,7 @@
 using Moq;
 using OnlineShop.Areas.Admin.Controllers;
 using OnlineShop.Areas.Admin.Interfaces;
-using OnlineShop.Models.Db;
+using OnlineShop.Data;
 
 public class ProductsControllerTests
 {

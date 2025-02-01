@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using OnlineShop.Models.Db;
-using OnlineShop.Models.ViewModels;
+using OnlineShop.Data;
+using OnlineShop.ViewModels;
 
 public class CartService
 {

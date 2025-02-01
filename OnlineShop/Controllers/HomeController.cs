@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Models;
+using OnlineShop.ViewModels;
 
 
 namespace OnlineShop.Controllers
@@ -8,9 +9,9 @@ namespace OnlineShop.Controllers
     public class HomeController : Controller
     {
 
-        private readonly AdminBannersService _bannerService;
+        private readonly AdminBannersRepository _bannerService;
 
-        public HomeController(AdminBannersService bannerService)
+        public HomeController(AdminBannersRepository bannerService)
         {
 
             _bannerService = bannerService;

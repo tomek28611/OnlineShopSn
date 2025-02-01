@@ -1,8 +1,8 @@
 ﻿
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OnlineShop.Models.Db;
 using OnlineShop.Areas.Admin.Interfaces;
+using OnlineShop.Data.Entities;
 
 namespace OnlineShop.Areas.Admin.Controllers
 {
@@ -46,7 +46,7 @@ namespace OnlineShop.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,SubTitle,ImageName,Priority,Link,Position")] Banner banner, IFormFile imageFile)
+        public async Task<IActionResult> Create([Bind("Id,Title,SubTitle,ImageName,Priority,Link,Position")] BannerEntity banner, IFormFile imageFile)
         {
             if (ModelState.IsValid)
             {
@@ -78,7 +78,7 @@ namespace OnlineShop.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,SubTitle,ImageName,Priority,Link,Position")] Banner banner, IFormFile? imageFile)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,SubTitle,ImageName,Priority,Link,Position")] BannerEntity banner, IFormFile? imageFile)
         {
             if (id != banner.Id)
             {

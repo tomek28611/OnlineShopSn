@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using OnlineShop.Models.Db;
-using OnlineShop.Models.ViewModels;
 using OnlineShop.Services;
+using OnlineShop.Data;
+using OnlineShop.ViewModels;
 
 
 namespace OnlineShop.Controllers

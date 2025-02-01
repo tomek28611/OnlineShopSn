@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OnlineShop.Models.Db
+namespace OnlineShop.Data
 {
     public partial class Menus
     {
@@ -12,5 +12,7 @@ namespace OnlineShop.Models.Db
         public string? Link { get; set; }
 
         public string? Type { get; set; }
+     
+        
     }
 }

@@ -1,6 +1,6 @@
-﻿using OnlineShop.Models.Db;
+﻿using OnlineShop.Data;
 
-namespace OnlineShop.Models.ViewModels
+namespace OnlineShop.ViewModels
 {
     public class ProductDetailsViewModel
     {

@@ -1,7 +1,7 @@
-﻿using OnlineShop.Models.Db;
-using OnlineShop.Models.ViewModels;
+﻿using OnlineShop.Models.ViewModels;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using OnlineShop.Data;
 
 namespace OnlineShop.Services
 {

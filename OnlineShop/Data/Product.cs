@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OnlineShop.Models.Db;
+namespace OnlineShop.Data;
 
-public partial class Product
+public class Product
 {
     public int Id { get; set; }
 

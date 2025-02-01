@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Areas.Admin.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using OnlineShop.Models.Db;
 using OnlineShop.Areas.Admin.Services;
+using OnlineShop.Data;
 
 
 namespace OnlineShop.Areas.Admin.Controllers
@@ -13,12 +13,13 @@ namespace OnlineShop.Areas.Admin.Controllers
     [Authorize(Roles = "admin")]
     public class ProductsController : Controller
     {
-        private readonly OnlineShopContext _context;
+        private readonly IDbContextFactory<OnlineShopContext> _context;
+        private readonly IDbContextFactory<OnlineShopContext> contextFactory;
         private readonly IProductsService _productsService;
 
-        public ProductsController(OnlineShopContext context, IProductsService productsService)
+        public ProductsController(IDbContextFactory<OnlineShopContext> contextFactory, IProductsService productsService)
         {
-            _context = context;
+            this.contextFactory = contextFactory;
             _productsService = productsService;
         }
 
@@ -29,8 +30,9 @@ namespace OnlineShop.Areas.Admin.Controllers
             return View(menus);
         }
 
-        public IActionResult DeleteGallery(int id)
+        public async Task<IActionResult> DeleteGallery(int id)
         {
+            using var _context = await contextFactory.CreateDbContextAsync();
             var gallery = _context.ProductGaleries.FirstOrDefault(x => x.Id == id);
             if (gallery == null)
             {

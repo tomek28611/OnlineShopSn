@@ -2,22 +2,22 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-using OnlineShop.Models.Db;
+using OnlineShop.Data.Entities;
 
-namespace OnlineShop.Models.Db;
+namespace OnlineShop.Data;
 
-public partial class OnlineShopContext : DbContext
+public class OnlineShopContext : DbContext
 {
     public OnlineShopContext()
     {
     }
-     
+
     public OnlineShopContext(DbContextOptions<OnlineShopContext> options)
         : base(options)
     {
     }
 
-    public virtual DbSet<Banner> Banners { get; set; }
+    public virtual DbSet<BannerEntity> Banners { get; set; }
 
     public virtual DbSet<Product> Products { get; set; }
 
@@ -31,17 +31,9 @@ public partial class OnlineShopContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Banner>(entity =>
-        {
-            entity.ToTable("Banner");
 
-            entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.ImageName).HasMaxLength(50);
-            entity.Property(e => e.Link).HasMaxLength(100);
-            entity.Property(e => e.Position).HasMaxLength(50);
-            entity.Property(e => e.SubTitle).HasMaxLength(1000);
-            entity.Property(e => e.Title).HasMaxLength(200);
-        });
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(OnlineShopContext).Assembly);
+        base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<Product>(entity =>
         {
@@ -120,14 +112,7 @@ public partial class OnlineShopContext : DbContext
                 .HasMaxLength(100)
                 .IsFixedLength();
         });
-
-
-
-
-        OnModelCreatingPartial(modelBuilder);
     }
 
-    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
-
-public DbSet<OnlineShop.Models.Db.Menus> Menus { get; set; } = default!;
+    public DbSet<Menus> Menus { get; set; } = default!;
 }

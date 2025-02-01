@@ -1,6 +1,6 @@
 ﻿using OnlineShop.Areas.Admin.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using OnlineShop.Models.Db;
+using OnlineShop.Data;
 
 namespace OnlineShop.Areas.Admin.Services
 {

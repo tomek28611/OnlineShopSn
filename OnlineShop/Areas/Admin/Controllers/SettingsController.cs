@@ -2,8 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Areas.Admin.Interfaces;
 using OnlineShop.Areas.Admin.Services;
-using OnlineShop.Models.Db;
-
+using OnlineShop.Data;
 
 namespace OnlineShop.Areas.Admin.Controllers
 {

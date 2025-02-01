@@ -2,8 +2,7 @@
 using Moq;
 using OnlineShop.Areas.Admin.Controllers;
 using OnlineShop.Areas.Admin.Interfaces;
-using OnlineShop.Models.Db;
-
+using OnlineShop.Data.Entities;
 
 public class BannersControllerTests
 {
@@ -20,10 +19,10 @@ public class BannersControllerTests
     public async Task Index_ReturnsViewResult_WithListOfBanners()
     {
         // Arrange
-        var banners = new List<Banner>
+        var banners = new List<BannerEntity>
         {
-            new Banner { Id = 1, Title = "Banner 1" },
-            new Banner { Id = 2, Title = "Banner 2" }
+            new BannerEntity { Id = 1, Title = "Banner 1" },
+            new BannerEntity { Id = 2, Title = "Banner 2" }
         };
 
         _bannerServiceMock.Setup(service => service.GetAllBannersAsync())
@@ -41,7 +40,7 @@ public class BannersControllerTests
     public async Task Details_ReturnsViewResult_WithBannerDetails()
     {
         // Arrange
-        var banner = new Banner { Id = 1, Title = "Banner 1" };
+        var banner = new BannerEntity { Id = 1, Title = "Banner 1" };
         _bannerServiceMock.Setup(service => service.GetBannerByIdAsync(1))
             .ReturnsAsync(banner);
 
@@ -57,7 +56,7 @@ public class BannersControllerTests
     public async Task Create_ValidBanner_RedirectsToIndex()
     {
         // Arrange
-        var banner = new Banner { Id = 1, Title = "Banner 1" };
+        var banner = new BannerEntity { Id = 1, Title = "Banner 1" };
         _bannerServiceMock.Setup(service => service.CreateBannerAsync(banner, null))
             .ReturnsAsync(true);
 
@@ -73,7 +72,7 @@ public class BannersControllerTests
     public async Task Edit_ValidBanner_RedirectsToIndex()
     {
         // Arrange
-        var banner = new Banner { Id = 1, Title = "Banner 1" };
+        var banner = new BannerEntity { Id = 1, Title = "Banner 1" };
         _bannerServiceMock.Setup(service => service.UpdateBannerAsync(banner, null))
             .ReturnsAsync(true);
 

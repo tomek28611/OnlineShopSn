@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OnlineShop.Models.Db;
+namespace OnlineShop.Data;
 
 public partial class ProductGalery
 {

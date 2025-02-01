@@ -1,6 +1,5 @@
 
 using Microsoft.AspNetCore.Authentication.Cookies;
-using OnlineShop.Models.Db;
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
@@ -9,13 +8,14 @@ using OnlineShop.Areas.Admin.Interfaces;
 using OnlineShop.Areas.Admin.Services;
 using Microsoft.EntityFrameworkCore;
 using OnlineShop.Middleware;
+using OnlineShop.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<ValidationService>();
-builder.Services.AddScoped<AdminBannersService>();
+builder.Services.AddScoped<AdminBannersRepository>();
 builder.Services.AddScoped<CommentService>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<CartService>();
@@ -40,7 +40,11 @@ builder.Services
     .AddFontAwesomeIcons();
 
 
-builder.Services.AddDbContext<OnlineShopContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContextFactory<OnlineShopContext>(options =>
+options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), sqlServerOptionsAction =>
+{
+    sqlServerOptionsAction.EnableRetryOnFailure();
+}));
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
         .AddCookie(options =>
